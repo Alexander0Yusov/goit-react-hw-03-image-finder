@@ -6,21 +6,26 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 export class App extends Component {
   state = {
     queryInput: '',
-    gallery: [],
+    hits: null,
+    total: null,
   };
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
-    this.setState({ queryInput: e.target.input.value });
-    this.getInfo();
+    await this.setState({ queryInput: e.target.input.value });
+    await this.getInfo();
   };
 
   getInfo = () => {
     const Api = new ApiService(this.state.queryInput);
-    Api.request().then(res => this.setState({ gallery: res }));
+    Api.request()
+      .then(({ hits, total }) => this.setState({ hits, total }))
+      .catch(er => console.log(er.message));
   };
 
   render() {
+    const { hits, total } = this.state;
+
     return (
       <div
         style={{
@@ -33,7 +38,7 @@ export class App extends Component {
         }}
       >
         <Searchbar onSubmit={this.handleSubmit} />
-        <ImageGallery gallery={this.state.gallery} />
+        <ImageGallery hits={hits} total={total} />
       </div>
     );
   }

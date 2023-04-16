@@ -6,17 +6,27 @@ class ApiService {
   static MY_KEY = '34154795-6fcd5a0715506f88bd4f4189d';
   static URL = 'https://pixabay.com/api/?';
   #page = 1;
+  #per_page = 5;
 
   constructor(query) {
     this.query = query;
   }
 
   request() {
-    return fetch(
-      `${ApiService.URL}key=${ApiService.MY_KEY}&per_page=2&page=${
-        this.#page
-      }&q=${this.query}`
-    ).then(response => response.json());
+    const queryString = `${ApiService.URL}key=${ApiService.MY_KEY}&per_page=${
+      this.#per_page
+    }&page=${this.#page}&q=${this.query}`;
+
+    return fetch(queryString).then(response => response.json());
+  }
+
+  nextPage() {
+    this.#page++;
+  }
+
+  resetApi() {
+    this.#page = 1;
+    this.query = '';
   }
 }
 

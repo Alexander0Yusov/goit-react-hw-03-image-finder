@@ -6,13 +6,12 @@ export class ImageGallery extends Component {
   };
 
   render() {
-    const { gallery } = this.props;
+    const { hits, total } = this.props;
+    console.log(hits);
 
     return (
       <ul className="gallery">
-        {gallery.map((item, index) => (
-          <li>{index}</li>
-        ))}
+        {total && hits.map(({ id }) => <li key={id}>{id}</li>)}
       </ul>
     );
   }
