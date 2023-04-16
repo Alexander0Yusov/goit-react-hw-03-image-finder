@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import css from './Searchbar.module.css';
 import { CiSearch } from 'react-icons/ci';
 // https://react-icons.github.io/react-icons/icons?name=ci
 
@@ -15,16 +16,17 @@ export class Searchbar extends Component {
     const { onSubmit } = this.props;
 
     return (
-      <header className="searchbar">
-        <form className="form" onSubmit={onSubmit}>
-          <button type="submit" className="button">
-            <span className="button-label">
+      <header className={css.Searchbar}>
+        <form className={css.SearchForm} onSubmit={onSubmit}>
+          <button type={css.SearchFormButton} className="button">
+            <span className={''}>
               <CiSearch className="" />
+              {/* Search */}
             </span>
           </button>
 
           <input
-            className="input"
+            className={css.SearchFormInput}
             type="text"
             autoComplete="off"
             autoFocus
