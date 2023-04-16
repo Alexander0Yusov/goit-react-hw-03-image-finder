@@ -1,10 +1,11 @@
 import { Component } from 'react';
+import css from './Modal.module.css';
 
 export class Modal extends Component {
   render() {
     return (
-      <div class="overlay">
-        <div class="modal">
+      <div className={css.Overlay}>
+        <div className={css.Modal}>
           <img src="" alt="" />
         </div>
       </div>

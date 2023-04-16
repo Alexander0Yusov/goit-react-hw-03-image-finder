@@ -18,11 +18,8 @@ export class Searchbar extends Component {
     return (
       <header className={css.Searchbar}>
         <form className={css.SearchForm} onSubmit={onSubmit}>
-          <button type={css.SearchFormButton} className="button">
-            <span className={''}>
-              <CiSearch className="" />
-              {/* Search */}
-            </span>
+          <button className={css.SearchFormButton} type="submit">
+            <CiSearch />
           </button>
 
           <input

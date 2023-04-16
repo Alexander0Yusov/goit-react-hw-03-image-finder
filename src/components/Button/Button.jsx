@@ -1,7 +1,14 @@
 import { Component } from 'react';
+import css from './Button.module.css';
 
 export class Button extends Component {
   render() {
-    return <button type="button">Load more</button>;
+    const { onClick } = this.props;
+
+    return (
+      <button onClick={() => onClick()} className={css.Button} type="button">
+        Load more
+      </button>
+    );
   }
 }

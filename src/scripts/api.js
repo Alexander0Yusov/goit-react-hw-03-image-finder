@@ -6,7 +6,8 @@ class ApiService {
   static MY_KEY = '34154795-6fcd5a0715506f88bd4f4189d';
   static URL = 'https://pixabay.com/api/?';
   #page = 1;
-  #per_page = 5;
+  #pages = 0;
+  #per_page = 4;
 
   constructor(query) {
     this.query = query;
@@ -27,6 +28,25 @@ class ApiService {
   resetApi() {
     this.#page = 1;
     this.query = '';
+  }
+
+  calculatePages(totalItems) {
+    if (totalItems) {
+      totalItems % this.#per_page === 0
+        ? (this.#pages = Math.floor(totalItems / this.#per_page))
+        : (this.#pages = Math.floor(totalItems / this.#per_page) + 1);
+    }
+  }
+
+  isLastPage() {
+    return this.#page === this.#pages;
+  }
+
+  set pages(value) {
+    this.#pages = value;
+  }
+  get pages() {
+    return this.#pages;
   }
 }
 
