@@ -13,10 +13,12 @@ class ApiService {
     this.query = query;
   }
 
-  request() {
+  async request() {
     const queryString = `${ApiService.URL}key=${ApiService.MY_KEY}&per_page=${
       this.#per_page
     }&page=${this.#page}&q=${this.query}`;
+
+    await new Promise(r => setTimeout(r, 500));
 
     return fetch(queryString).then(response => response.json());
   }

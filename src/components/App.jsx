@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { Vortex } from 'react-loader-spinner';
 import { ApiService } from 'scripts';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
@@ -10,7 +11,12 @@ export class App extends Component {
     hits: [],
     total: null,
     api: null,
+    isLoading: false,
   };
+
+  setLoading(bool) {
+    this.setState({ isLoading: bool });
+  }
 
   handleSubmit = async e => {
     e.preventDefault();
@@ -21,31 +27,36 @@ export class App extends Component {
   getInfo = () => {
     const Api = new ApiService(this.state.queryInput);
     this.setState({ api: Api });
+    this.setLoading(true);
 
     Api.request()
       .then(({ hits, total }) => {
         this.setState({ hits, total });
         Api.calculatePages(total);
+        this.setLoading(false);
       })
-      .catch(er => console.log(er.message));
+      .catch(er => console.log(er.message))
+      .finally();
   };
 
   getMoreInfo = () => {
     const Api = this.state.api;
-    console.log(Api.pages, '===', this.state.total);
+    this.setLoading(true);
 
     Api.nextPage();
     Api.request()
-      .then(({ hits }) =>
+      .then(({ hits }) => {
         this.setState(prev => {
           return { hits: [...prev.hits, ...hits] };
-        })
-      )
-      .catch(er => console.log(er.message));
+        });
+        this.setLoading(false);
+      })
+      .catch(er => console.log(er.message))
+      .finally();
   };
 
   render() {
-    const { hits, total } = this.state;
+    const { hits, total, api, isLoading } = this.state;
 
     return (
       <div
@@ -61,8 +72,21 @@ export class App extends Component {
       >
         <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery hits={hits} total={total} />
-        {this.state.total && !this.state.api.isLastPage() && (
+
+        {total && !isLoading && !api.isLastPage() && (
           <Button onClick={this.getMoreInfo} />
+        )}
+
+        {isLoading && (
+          <Vortex
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="vortex-loading"
+            wrapperStyle={{}}
+            wrapperClass="vortex-wrapper"
+            colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
+          />
         )}
       </div>
     );
