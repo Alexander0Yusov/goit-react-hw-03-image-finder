@@ -14,15 +14,22 @@ export class App extends Component {
     isLoading: false,
   };
 
-  setLoading(bool) {
-    this.setState({ isLoading: bool });
-  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (prevState.hits.length !== this.state.hits.length) {
+  //     this.setLoading(false);
+  //   }
+  // }
+  // не пригодилось
 
   handleSubmit = async e => {
     e.preventDefault();
     await this.setState({ queryInput: e.target.input.value });
     await this.getInfo();
   };
+
+  setLoading(bool) {
+    this.setState({ isLoading: bool });
+  }
 
   getInfo = () => {
     const Api = new ApiService(this.state.queryInput);
@@ -31,12 +38,11 @@ export class App extends Component {
 
     Api.request()
       .then(({ hits, total }) => {
-        this.setState({ hits, total });
         Api.calculatePages(total);
-        this.setLoading(false);
+        this.setState({ hits, total });
       })
       .catch(er => console.log(er.message))
-      .finally();
+      .finally(() => this.setLoading(false));
   };
 
   getMoreInfo = () => {
@@ -49,10 +55,9 @@ export class App extends Component {
         this.setState(prev => {
           return { hits: [...prev.hits, ...hits] };
         });
-        this.setLoading(false);
       })
       .catch(er => console.log(er.message))
-      .finally();
+      .finally(() => this.setLoading(false));
   };
 
   render() {
@@ -73,11 +78,11 @@ export class App extends Component {
         <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery hits={hits} total={total} />
 
-        {total && !isLoading && !api.isLastPage() && (
-          <Button onClick={this.getMoreInfo} />
+        {Boolean(total && !isLoading && !api.isLastPage()) && (
+          <Button onLoad={this.getMoreInfo} />
         )}
 
-        {isLoading && (
+        {Boolean(isLoading) && (
           <Vortex
             visible={true}
             height="80"

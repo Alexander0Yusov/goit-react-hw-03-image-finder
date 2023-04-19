@@ -46,6 +46,11 @@
   opacity: 1;
 }
 
+.SearchFormButton svg {
+  height: 20px;
+  width: 20px;
+}
+
 .SearchFormButtonLabel {
   position: absolute;
   width: 1px;

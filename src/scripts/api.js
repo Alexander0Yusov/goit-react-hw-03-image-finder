@@ -1,5 +1,3 @@
-// const returnObj = { id, webformatURL, largeImageURL };
-// const myKey = '34154795-6fcd5a0715506f88bd4f4189d';
 // const reqStr = 'https://pixabay.com/api/?q=cat&page=1&key=your_key&image_type=photo&orientation=horizontal&per_page=12';
 
 class ApiService {
@@ -7,7 +5,7 @@ class ApiService {
   static URL = 'https://pixabay.com/api/?';
   #page = 1;
   #pages = 0;
-  #per_page = 4;
+  #per_page = 12;
 
   constructor(query) {
     this.query = query;

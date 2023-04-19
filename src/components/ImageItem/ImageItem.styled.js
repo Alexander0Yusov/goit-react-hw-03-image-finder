@@ -17,6 +17,21 @@ export const Img = styled.img`
   }
 `;
 
+const color = prop => {
+  switch (prop) {
+    case 'positive':
+      return 'green';
+    case 'negative':
+      return 'red';
+    default:
+      return 'gray';
+  }
+};
+
+export const Demo = styled.div`
+  color: ${color};
+`;
+
 /*
 настройка стилей в зависимости от пропсов (это вставить в поле -> ` ... `)
 но также канает логика ветвления тернарника, свича ... любая js
