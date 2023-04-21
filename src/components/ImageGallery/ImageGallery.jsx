@@ -2,11 +2,11 @@ import { Component } from 'react';
 import { ImageItem } from 'components/ImageItem/ImageItem';
 import css from './ImageGallery.module.css';
 import { Modal } from 'components/Modal/Modal';
+import PropTypes from 'prop-types';
 
 export class ImageGallery extends Component {
   state = {
-    badRequest: null,
-    source: [
+    debugSource: [
       {
         id: '1',
         webformatURL: 'https://i.ibb.co/MSKpsNk/1466665.jpg',
@@ -22,12 +22,6 @@ export class ImageGallery extends Component {
     showModal: false,
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps !== this.props) {
-      setTimeout(() => this.setState({ badRequest: 'Not found' }), 1500);
-    }
-  }
-
   selectPicture = link => {
     this.setState({ selectedPicture: link });
     this.toggleModal();
@@ -40,22 +34,20 @@ export class ImageGallery extends Component {
   };
 
   render() {
-    const { hits, total } = this.props;
+    const { hits } = this.props;
 
     return (
       <>
         <ul className={css.gallery}>
-          {total
-            ? hits.map(({ id, webformatURL, largeImageURL }) => (
-                <li key={id}>
-                  <ImageItem
-                    demoImg={webformatURL}
-                    largeImg={largeImageURL}
-                    clickHandler={this.selectPicture}
-                  />
-                </li>
-              ))
-            : this.state.badRequest}
+          {hits.map(({ id, webformatURL, largeImageURL }) => (
+            <li key={id}>
+              <ImageItem
+                demoImg={webformatURL}
+                largeImg={largeImageURL}
+                clickHandler={this.selectPicture}
+              />
+            </li>
+          ))}
         </ul>
         {this.state.showModal && (
           <Modal onClose={this.toggleModal}>
@@ -66,3 +58,13 @@ export class ImageGallery extends Component {
     );
   }
 }
+
+ImageGallery.propTypes = {
+  hits: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      webformatURL: PropTypes.string,
+      largeImageURL: PropTypes.string,
+    })
+  ),
+};

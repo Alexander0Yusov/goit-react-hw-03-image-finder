@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import css from './Searchbar.module.css';
 import { CiSearch } from 'react-icons/ci';
+import PropTypes from 'prop-types';
 // https://react-icons.github.io/react-icons/icons?name=ci
 
 export class Searchbar extends Component {
@@ -37,3 +38,7 @@ export class Searchbar extends Component {
     );
   }
 }
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func,
+};

@@ -5,21 +5,22 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 
+const statusCode = {
+  IDLE: 'idle',
+  PENDING: 'pending',
+  RESOLVED: 'resolved',
+  ERROR: 'error',
+  DONE: 'done',
+};
+
 export class App extends Component {
   state = {
     queryInput: '',
     hits: [],
     total: null,
     api: null,
-    isLoading: false,
+    status: statusCode.IDLE,
   };
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevState.hits.length !== this.state.hits.length) {
-  //     this.setLoading(false);
-  //   }
-  // }
-  // не пригодилось
 
   handleSubmit = async e => {
     e.preventDefault();
@@ -27,27 +28,31 @@ export class App extends Component {
     await this.getInfo();
   };
 
-  setLoading(bool) {
-    this.setState({ isLoading: bool });
+  setStatus(statusCode) {
+    this.setState({ status: statusCode });
   }
 
   getInfo = () => {
     const Api = new ApiService(this.state.queryInput);
     this.setState({ api: Api });
-    this.setLoading(true);
+    this.setStatus(statusCode.PENDING);
 
     Api.request()
       .then(({ hits, total }) => {
         Api.calculatePages(total);
         this.setState({ hits, total });
+        this.setStatus(statusCode.RESOLVED);
       })
-      .catch(er => console.log(er.message))
-      .finally(() => this.setLoading(false));
+      .catch(er => {
+        this.setStatus(statusCode.ERROR);
+        console.log(er.message);
+      })
+      .finally(() => this.setStatus(statusCode.DONE));
   };
 
   getMoreInfo = () => {
     const Api = this.state.api;
-    this.setLoading(true);
+    this.setStatus(statusCode.PENDING);
 
     Api.nextPage();
     Api.request()
@@ -55,13 +60,17 @@ export class App extends Component {
         this.setState(prev => {
           return { hits: [...prev.hits, ...hits] };
         });
+        this.setStatus(statusCode.RESOLVED);
       })
-      .catch(er => console.log(er.message))
-      .finally(() => this.setLoading(false));
+      .catch(er => {
+        this.setStatus(statusCode.ERROR);
+        console.log(er.message);
+      })
+      .finally(() => this.setStatus(statusCode.DONE));
   };
 
   render() {
-    const { hits, total, api, isLoading } = this.state;
+    const { hits, total, api, status } = this.state;
 
     return (
       <div
@@ -76,13 +85,13 @@ export class App extends Component {
         }}
       >
         <Searchbar onSubmit={this.handleSubmit} />
-        <ImageGallery hits={hits} total={total} />
+        <ImageGallery hits={hits} />
 
-        {Boolean(total && !isLoading && !api.isLastPage()) && (
+        {Boolean(status === statusCode.DONE && total && !api.isLastPage()) && (
           <Button onLoad={this.getMoreInfo} />
         )}
 
-        {Boolean(isLoading) && (
+        {status === statusCode.PENDING && (
           <Vortex
             visible={true}
             height="80"
@@ -93,7 +102,11 @@ export class App extends Component {
             colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
           />
         )}
+
+        {status === statusCode.DONE && !total && <p>Not found</p>}
       </div>
     );
   }
 }
+
+// опционален вариант: render(if-return/ if-return ...) 19-22 второе видео
