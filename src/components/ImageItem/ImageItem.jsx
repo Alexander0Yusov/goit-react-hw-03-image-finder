@@ -21,7 +21,7 @@ export class ImageItem extends Component {
 }
 
 ImageItem.propTypes = {
-  demoImg: PropTypes.string,
-  largeImg: PropTypes.string,
-  clickHandler: PropTypes.func,
+  demoImg: PropTypes.string.isRequired,
+  largeImg: PropTypes.string.isRequired,
+  clickHandler: PropTypes.func.isRequired,
 };

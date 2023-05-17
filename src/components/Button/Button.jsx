@@ -7,7 +7,7 @@ export class Button extends Component {
     const { onLoad } = this.props;
 
     return (
-      <button onClick={() => onLoad()} className={css.Button} type="button">
+      <button onClick={onLoad} className={css.Button} type="button">
         Load more
       </button>
     );
@@ -15,5 +15,5 @@ export class Button extends Component {
 }
 
 Button.propTypes = {
-  onLoad: PropTypes.func,
+  onLoad: PropTypes.func.isRequired,
 };

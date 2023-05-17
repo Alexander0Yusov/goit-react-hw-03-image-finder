@@ -24,8 +24,13 @@ export class App extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    await this.setState({ queryInput: e.target.input.value });
-    await this.getInfo();
+    const inputValue = String(e.target.input.value).trim();
+    await this.setState({ queryInput: inputValue });
+    if (inputValue) {
+      await this.getInfo();
+      return;
+    }
+    alert('Entered value is not valid');
   };
 
   setStatus(statusCode) {
@@ -40,6 +45,11 @@ export class App extends Component {
     Api.request()
       .then(({ hits, total }) => {
         Api.calculatePages(total);
+
+        hits = hits.map(({ id, webformatURL, largeImageURL }) => {
+          return { id, webformatURL, largeImageURL };
+        });
+
         this.setState({ hits, total });
         this.setStatus(statusCode.RESOLVED);
       })
@@ -57,6 +67,10 @@ export class App extends Component {
     Api.nextPage();
     Api.request()
       .then(({ hits }) => {
+        hits = hits.map(({ id, webformatURL, largeImageURL }) => {
+          return { id, webformatURL, largeImageURL };
+        });
+
         this.setState(prev => {
           return { hits: [...prev.hits, ...hits] };
         });
@@ -70,7 +84,7 @@ export class App extends Component {
   };
 
   render() {
-    const { hits, total, api, status } = this.state;
+    const { queryInput, hits, total, api, status } = this.state;
 
     return (
       <div
@@ -84,7 +98,7 @@ export class App extends Component {
           color: '#010101',
         }}
       >
-        <Searchbar onSubmit={this.handleSubmit} />
+        <Searchbar onSubmit={this.handleSubmit} inputValue={queryInput} />
         <ImageGallery hits={hits} />
 
         {Boolean(status === statusCode.DONE && total && !api.isLastPage()) && (

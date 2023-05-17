@@ -15,6 +15,7 @@ export class Searchbar extends Component {
 
   render() {
     const { onSubmit } = this.props;
+    const { queryInput } = this.state;
 
     return (
       <header className={css.Searchbar}>
@@ -30,7 +31,7 @@ export class Searchbar extends Component {
             autoFocus
             placeholder="Search images and photos"
             onChange={this.handleInput}
-            value={this.state.queryInput}
+            value={queryInput}
             name="input"
           />
         </form>
@@ -40,5 +41,5 @@ export class Searchbar extends Component {
 }
 
 Searchbar.propTypes = {
-  onSubmit: PropTypes.func,
+  onSubmit: PropTypes.func.isRequired,
 };
